@@ -190,7 +190,11 @@ export class Fighter {
 
   // Appelé par le système de hitbox quand ce fighter touche un adversaire
   registerHit(targetId) {
-    this.hitThisMove.add(targetId);
+    if (!this.hitThisMove.has(targetId)) {
+      this.hitThisMove.add(targetId);
+      // Gain de jauge lors d'un coup réussi (ex: +25%)
+      this.meter = Math.min(100, this.meter + 25);
+    }
   }
 
   hasHit(targetId) {
