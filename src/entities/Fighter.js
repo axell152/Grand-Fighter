@@ -42,7 +42,7 @@ export class Fighter {
     this.stateTimer = 0;
     this.hitThisMove = new Set(); // évite le multi-hit sur un seul mouvement
 
-    /// Représentation visuelle complète (corps, tête, membres et accessoires)
+    // Représentation visuelle stylisée (membres, accessoires, corps)
     const w = 46;
     const h = 100;
     this.width = w;
@@ -50,50 +50,49 @@ export class Fighter {
 
     this.container = scene.add.container(opts.x, opts.y);
 
-    // 1. Ombre au sol
     this.shadow = scene.add.ellipse(0, 4, w * 0.9, 14, 0x000000, 0.4);
-
-    // 2. Aura de garde / spécial
     this.guardFx = scene.add.rectangle(0, -h / 2, w + 16, h + 16, 0x38bdf8, 0.35)
       .setBlendMode(Phaser.BlendModes.ADD)
       .setVisible(false);
 
-    // 3. Membres (Bras et Jambes en arrière-plan)
-    this.leftArm = scene.add.rectangle(-w / 2 - 4, -h / 2 - 5, 12, 45, this.char.colorDark).setStrokeStyle(2, 0x0f172a);
-    this.rightArm = scene.add.rectangle(w / 2 + 4, -h / 2 - 5, 12, 45, this.char.colorDark).setStrokeStyle(2, 0x0f172a);
+    // Membres de base (bras et jambes)
+    this.leftArm = scene.add.rectangle(-w / 2 - 4, -h / 2 - 5, 12, 42, this.char.colorDark).setStrokeStyle(2, 0x0f172a);
+    this.rightArm = scene.add.rectangle(w / 2 + 4, -h / 2 - 5, 12, 42, this.char.colorDark).setStrokeStyle(2, 0x0f172a);
     this.leftLeg = scene.add.rectangle(-10, -25, 14, 50, this.char.colorDark).setStrokeStyle(2, 0x0f172a);
     this.rightLeg = scene.add.rectangle(10, -25, 14, 50, this.char.colorDark).setStrokeStyle(2, 0x0f172a);
 
-    // 4. Corps principal
-    this.body = scene.add.rectangle(0, -h / 2, w, h - 20, this.char.color)
-      .setStrokeStyle(4, 0x0f172a);
+    this.body = scene.add.rectangle(0, -h / 2, w, h - 20, this.char.color).setStrokeStyle(4, 0x0f172a);
+    this.armorPlate = scene.add.rectangle(0, -h / 2 - 10, w - 12, 26, this.char.colorDark).setStrokeStyle(2, 0xffffff, 0.25);
+    this.head = scene.add.circle(0, -h - 12, 18, this.char.color).setStrokeStyle(4, 0x0f172a);
 
-    // 5. Ceinture / Accessoire de taille
-    this.belt = scene.add.rectangle(0, -25, w + 4, 10, 0x0f172a);
-    this.beltBuckle = scene.add.rectangle(0, -25, 12, 10, 0xffd700);
-
-    // 6. Plastron / Vêtement
-    this.armorPlate = scene.add.rectangle(0, -h / 2 - 10, w - 12, 26, this.char.colorDark)
-      .setStrokeStyle(2, 0xffffff, 0.25);
-
-    // 7. Tête / Visage et Bandeau / Cheveux
-    this.head = scene.add.circle(0, -h - 12, 18, this.char.color)
-      .setStrokeStyle(4, 0x0f172a);
-    this.headband = scene.add.rectangle(0, -h - 14, w - 4, 8, this.char.colorDark);
-
-    // Assemblage dans le container (respect des calques)
-    this.container.add([
+    const accessories = [
       this.shadow,
       this.guardFx,
-      this.leftLeg, this.rightLeg,
-      this.leftArm, this.rightArm,
+      this.leftLeg,
+      this.rightLeg,
+      this.leftArm,
+      this.rightArm,
       this.body,
-      this.belt, this.beltBuckle,
       this.armorPlate,
-      this.head,
-      this.headband
-    ]);
-    this.container.add([this.shadow, this.guardFx, this.body, this.armorPlate, this.head]);
+      this.head
+    ];
+
+    // Personnalisation Kaira ("Élastik") : Chapeau de paille
+    if (this.char.id === 'kaira') {
+      this.hatBrim = scene.add.rectangle(0, -h - 30, 56, 8, 0xfde047).setStrokeStyle(2, 0xca8a04);
+      this.hatTop = scene.add.rectangle(0, -h - 40, 32, 14, 0xfde047).setStrokeStyle(2, 0xca8a04);
+      accessories.push(this.hatBrim, this.hatTop);
+    }
+
+    // Personnalisation Ryn : Les trois sabres
+    if (this.char.id === 'ryn') {
+      this.sword1 = scene.add.rectangle(w / 2 + 16, -h / 2, 28, 5, 0xe2e8f0).setStrokeStyle(1, 0x0f172a);
+      this.sword2 = scene.add.rectangle(w / 2 + 16, -h / 2 - 10, 28, 5, 0xe2e8f0).setStrokeStyle(1, 0x0f172a);
+      this.sword3 = scene.add.rectangle(0, -h - 10, 32, 5, 0xe2e8f0).setAngle(45).setStrokeStyle(1, 0x0f172a);
+      accessories.push(this.sword1, this.sword2, this.sword3);
+    }
+
+    this.container.add(accessories);
 
     scene.physics.add.existing(this.container);
     this.container.body.setSize(w, h + 32);
@@ -101,12 +100,12 @@ export class Fighter {
     this.container.body.setCollideWorldBounds(true);
     this.container.body.setDragX(1200);
 
-    this.activeHitboxRect = null; // debug/visuel de hitbox active
+    this.activeHitboxRect = null;
     this.onHitCallback = opts.onHit || null;
     this.onKoCallback = opts.onKo || null;
 
-    this.inputBuffer = null; // assigné en externe pour les joueurs humains
-    this.controller = null; // assigné en externe (AIController) pour les CPU
+    this.inputBuffer = null;
+    this.controller = null;
   }
 
   get x() { return this.container.x; }
@@ -133,14 +132,12 @@ export class Fighter {
   moveLeft() {
     if (!this.canAct()) return;
     this.container.body.setVelocityX(-MOVE_SPEED * this.char.walkSpeed);
-    this.setFacingTowardsOpponent(false);
     this.setState(STATE.WALK);
   }
 
   moveRight() {
     if (!this.canAct()) return;
     this.container.body.setVelocityX(MOVE_SPEED * this.char.walkSpeed);
-    this.setFacingTowardsOpponent(false);
     this.setState(STATE.WALK);
   }
 
@@ -152,7 +149,6 @@ export class Fighter {
   }
 
   setFacingTowardsOpponent(auto = true) {
-    // Ne force pas le facing pendant les déplacements manuels ; utilisé surtout par l'IA/auto-face
     if (!auto) return;
   }
 
@@ -202,7 +198,6 @@ export class Fighter {
     return true;
   }
 
-  // Renvoie la hitbox active (coordonnées monde) si on est en phase "active", sinon null
   getActiveHitboxWorld() {
     if (!this.currentMove || this.movePhase !== 'active') return null;
     const hb = this.currentMove.hitbox;
@@ -229,11 +224,9 @@ export class Fighter {
     };
   }
 
-  // Appelé par le système de hitbox quand ce fighter touche un adversaire
   registerHit(targetId) {
     if (!this.hitThisMove.has(targetId)) {
       this.hitThisMove.add(targetId);
-      // Gain de jauge lors d'un coup réussi (ex: +25%)
       this.meter = Math.min(100, this.meter + 25);
     }
   }
@@ -242,7 +235,6 @@ export class Fighter {
     return this.hitThisMove.has(targetId);
   }
 
-  // Appelé quand ce fighter est touché par une attaque adverse
   receiveHit(hitbox, attackerX) {
     if (!this.alive) return;
 
@@ -294,11 +286,9 @@ export class Fighter {
     this.stateTimer = 0;
   }
 
-  // --- Boucle de mise à jour, appelée chaque frame par CombatScene ---
   update(dt) {
     if (!this.container?.body) return;
 
-    // Facing automatique hors attaque/hitstun (permet de toujours se tourner vers la cible)
     if (this.autoFaceTarget && !this.isBusy()) {
       const dir = this.autoFaceTarget.x >= this.x ? 1 : -1;
       if (dir !== this.facing) this.setFacing(dir);
@@ -342,6 +332,29 @@ export class Fighter {
   updateAttackPhases(dt) {
     this.movePhaseTimer += dt;
     const m = this.currentMove;
+    const defaultArmX = this.width / 2 + 4;
+
+    // Animation dynamique des bras lors des attaques
+    if (this.char.id === 'kaira' && this.currentMoveType === 'special') {
+      // Bras élastique qui s'allonge brusquement en phase active
+      if (this.movePhase === 'active') {
+        this.rightArm.width = 100;
+        this.rightArm.x = defaultArmX + 45;
+      } else {
+        this.rightArm.width = 12;
+        this.rightArm.x = defaultArmX;
+      }
+    } else if (this.currentMoveType) {
+      // Mouvement standard de coup de poing / estoc
+      if (this.movePhase === 'startup') {
+        this.rightArm.x = defaultArmX - 6;
+      } else if (this.movePhase === 'active') {
+        this.rightArm.x = defaultArmX + 16;
+      } else {
+        this.rightArm.x = defaultArmX;
+      }
+    }
+
     if (this.movePhase === 'startup' && this.movePhaseTimer >= m.startup) {
       this.movePhase = 'active';
       this.movePhaseTimer = 0;
@@ -350,6 +363,8 @@ export class Fighter {
       this.movePhaseTimer = 0;
     } else if (this.movePhase === 'recovery' && this.movePhaseTimer >= m.recovery) {
       this.currentMove = null;
+      this.rightArm.width = 12;
+      this.rightArm.x = defaultArmX;
       this.setState(STATE.IDLE);
     }
   }
