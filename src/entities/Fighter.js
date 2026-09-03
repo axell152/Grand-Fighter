@@ -42,34 +42,57 @@ export class Fighter {
     this.stateTimer = 0;
     this.hitThisMove = new Set(); // évite le multi-hit sur un seul mouvement
 
-    // Représentation visuelle stylisée (effet arcade/anime)
-    const w = 50;
-    const h = 105;
+    /// Représentation visuelle complète (corps, tête, membres et accessoires)
+    const w = 46;
+    const h = 100;
     this.width = w;
     this.height = h;
 
     this.container = scene.add.container(opts.x, opts.y);
 
-    // 1. Ombre au sol sous les pieds
-    this.shadow = scene.add.ellipse(0, 4, w * 0.85, 14, 0x000000, 0.45);
+    // 1. Ombre au sol
+    this.shadow = scene.add.ellipse(0, 4, w * 0.9, 14, 0x000000, 0.4);
 
-    // 2. Aura / Effet de garde ou de spécial (en arrière-plan du corps)
-    this.guardFx = scene.add.rectangle(0, -h / 2, w + 18, h + 18, 0x38bdf8, 0.35)
+    // 2. Aura de garde / spécial
+    this.guardFx = scene.add.rectangle(0, -h / 2, w + 16, h + 16, 0x38bdf8, 0.35)
       .setBlendMode(Phaser.BlendModes.ADD)
       .setVisible(false);
 
-    // 3. Corps principal avec un contour sombre prononcé
-    this.body = scene.add.rectangle(0, -h / 2, w, h, this.char.color)
+    // 3. Membres (Bras et Jambes en arrière-plan)
+    this.leftArm = scene.add.rectangle(-w / 2 - 4, -h / 2 - 5, 12, 45, this.char.colorDark).setStrokeStyle(2, 0x0f172a);
+    this.rightArm = scene.add.rectangle(w / 2 + 4, -h / 2 - 5, 12, 45, this.char.colorDark).setStrokeStyle(2, 0x0f172a);
+    this.leftLeg = scene.add.rectangle(-10, -25, 14, 50, this.char.colorDark).setStrokeStyle(2, 0x0f172a);
+    this.rightLeg = scene.add.rectangle(10, -25, 14, 50, this.char.colorDark).setStrokeStyle(2, 0x0f172a);
+
+    // 4. Corps principal
+    this.body = scene.add.rectangle(0, -h / 2, w, h - 20, this.char.color)
       .setStrokeStyle(4, 0x0f172a);
 
-    // 4. Plastron / Vêtement central pour casser l'effet bloc uni
-    this.armorPlate = scene.add.rectangle(0, -h / 2 - 8, w - 14, 28, this.char.colorDark)
-      .setStrokeStyle(2, 0xffffff, 0.2);
+    // 5. Ceinture / Accessoire de taille
+    this.belt = scene.add.rectangle(0, -25, w + 4, 10, 0x0f172a);
+    this.beltBuckle = scene.add.rectangle(0, -25, 12, 10, 0xffd700);
 
-    // 5. Tête / Visage stylisé
-    this.head = scene.add.circle(0, -h - 14, 18, this.char.color)
+    // 6. Plastron / Vêtement
+    this.armorPlate = scene.add.rectangle(0, -h / 2 - 10, w - 12, 26, this.char.colorDark)
+      .setStrokeStyle(2, 0xffffff, 0.25);
+
+    // 7. Tête / Visage et Bandeau / Cheveux
+    this.head = scene.add.circle(0, -h - 12, 18, this.char.color)
       .setStrokeStyle(4, 0x0f172a);
+    this.headband = scene.add.rectangle(0, -h - 14, w - 4, 8, this.char.colorDark);
 
+    // Assemblage dans le container (respect des calques)
+    this.container.add([
+      this.shadow,
+      this.guardFx,
+      this.leftLeg, this.rightLeg,
+      this.leftArm, this.rightArm,
+      this.body,
+      this.belt, this.beltBuckle,
+      this.armorPlate,
+      this.head,
+      this.headband
+    ]);
     this.container.add([this.shadow, this.guardFx, this.body, this.armorPlate, this.head]);
 
     scene.physics.add.existing(this.container);
