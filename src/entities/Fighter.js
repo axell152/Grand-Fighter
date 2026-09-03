@@ -42,17 +42,35 @@ export class Fighter {
     this.stateTimer = 0;
     this.hitThisMove = new Set(); // évite le multi-hit sur un seul mouvement
 
-    // Représentation visuelle simple (placeholder rectangle + tête)
-    const w = 46;
-    const h = 100;
+    // Représentation visuelle stylisée (effet arcade/anime)
+    const w = 50;
+    const h = 105;
     this.width = w;
     this.height = h;
 
     this.container = scene.add.container(opts.x, opts.y);
-    this.body = scene.add.rectangle(0, -h / 2, w, h, this.char.color).setStrokeStyle(3, this.char.colorDark);
-    this.head = scene.add.circle(0, -h - 12, 16, this.char.color).setStrokeStyle(3, this.char.colorDark);
-    this.guardFx = scene.add.rectangle(0, -h / 2, w + 16, h + 16, 0x66d9ff, 0.25).setVisible(false);
-    this.container.add([this.guardFx, this.body, this.head]);
+
+    // 1. Ombre au sol sous les pieds
+    this.shadow = scene.add.ellipse(0, 4, w * 0.85, 14, 0x000000, 0.45);
+
+    // 2. Aura / Effet de garde ou de spécial (en arrière-plan du corps)
+    this.guardFx = scene.add.rectangle(0, -h / 2, w + 18, h + 18, 0x38bdf8, 0.35)
+      .setBlendMode(Phaser.BlendModes.ADD)
+      .setVisible(false);
+
+    // 3. Corps principal avec un contour sombre prononcé
+    this.body = scene.add.rectangle(0, -h / 2, w, h, this.char.color)
+      .setStrokeStyle(4, 0x0f172a);
+
+    // 4. Plastron / Vêtement central pour casser l'effet bloc uni
+    this.armorPlate = scene.add.rectangle(0, -h / 2 - 8, w - 14, 28, this.char.colorDark)
+      .setStrokeStyle(2, 0xffffff, 0.2);
+
+    // 5. Tête / Visage stylisé
+    this.head = scene.add.circle(0, -h - 14, 18, this.char.color)
+      .setStrokeStyle(4, 0x0f172a);
+
+    this.container.add([this.shadow, this.guardFx, this.body, this.armorPlate, this.head]);
 
     scene.physics.add.existing(this.container);
     this.container.body.setSize(w, h + 32);
