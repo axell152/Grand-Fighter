@@ -287,8 +287,13 @@ export class Fighter {
     if (!this.container?.body) return;
 
     if (this.autoFaceTarget && !this.isBusy()) {
-      const dir = this.autoFaceTarget.x >= this.x ? 1 : -1;
-      if (dir !== this.facing) this.setFacing(dir);
+      const dx = this.autoFaceTarget.x - this.x;
+      // Zone morte pour éviter le retournement (flip) permanent quand les deux
+      // persos sont très proches et que leur position oscille de quelques pixels.
+      if (Math.abs(dx) > 6) {
+        const dir = dx >= 0 ? 1 : -1;
+        if (dir !== this.facing) this.setFacing(dir);
+      }
     }
 
     switch (this.state) {
