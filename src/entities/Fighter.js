@@ -88,9 +88,9 @@ export class Fighter {
     const bodyWidth = w * 0.6; 
     const bodyHeight = h;
     
-    // Centre la hitbox horizontalement et place sa base exactement sur le point 0 du conteneur (les pieds)
     this.container.body.setSize(bodyWidth, bodyHeight);
     this.container.body.setOffset(-bodyWidth / 2, -bodyHeight);
+    this.container.body.updateFromGameObject(); // <--- Synchronise instantanément la position physique avec le conteneur
     
     this.container.body.setCollideWorldBounds(true);
     this.container.body.setDragX(1200);
