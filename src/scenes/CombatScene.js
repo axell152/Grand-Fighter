@@ -156,7 +156,7 @@ export class CombatScene extends Phaser.Scene {
     const spacing = 90;
     active.forEach((f, i) => {
       const offset = (i - (active.length - 1) / 2) * spacing;
-      f.setPosition(baseX + offset, GROUND_Y);
+      f.setPosition(baseX + offset, GROUND_Y); // <--- Doit être exactement GROUND_Y
       f.setFacing(side === 'player' ? 1 : -1);
       f.container.setVisible(true);
       f.container.body.setVelocity(0, 0);
