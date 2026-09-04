@@ -181,6 +181,7 @@ export class CombatScene extends Phaser.Scene {
     this.keyBlock = this.input.keyboard.addKey('U');
     this.keyLight = this.input.keyboard.addKey('I');
     this.keySpecial = this.input.keyboard.addKey('O');
+    this.keyDodge = this.input.keyboard.addKey('E');
     this.keySwap = this.input.keyboard.addKey('T');
     this.inputBuffer = new InputBuffer();
   }
@@ -223,6 +224,11 @@ export class CombatScene extends Phaser.Scene {
     // Cible auto la plus proche pour le facing
     const target = this.nearestEnemy();
     if (target) p.autoFaceTarget = target;
+
+    // Esquive arrière (édge-triggered, gère elle-même son cooldown en interne)
+    if (Phaser.Input.Keyboard.JustDown(this.keyDodge)) {
+      p.dodge();
+    }
 
     if (p.canAct()) {
       if (this.keyLeft.isDown) p.moveLeft();
