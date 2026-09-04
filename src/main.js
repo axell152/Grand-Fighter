@@ -11,7 +11,7 @@ window.Phaser = Phaser; // pratique pour Phaser.Math / Phaser.Input dans les sc√
 
 const config = {
     type: Phaser.AUTO,
-    width: 1100,
+    width: 950,
     height: 600,
     parent: 'game-container',
     scale: {
