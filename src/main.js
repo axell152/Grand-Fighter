@@ -11,12 +11,12 @@ window.Phaser = Phaser; // pratique pour Phaser.Math / Phaser.Input dans les sc�
 
 const config = {
     type: Phaser.AUTO,
-    width: 950,
+    width: 960,
     height: 600,
     parent: 'game-container',
     scale: {
-        mode: Phaser.Scale.FIT,          // Redimensionne le jeu pour qu'il tienne entièrement dans l'écran
-        autoCenter: Phaser.Scale.CENTER_BOTH // Centre le jeu automatiquement au milieu de la page
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
     },
     physics: {
         default: 'arcade',
@@ -26,8 +26,9 @@ const config = {
         }
     },
     render: {
-        pixelArt: true, // <--- Indispensable pour le pixel art, évite le flou et stabilise le rendu
-        antialias: false
+        pixelArt: true,
+        antialias: false,
+        roundPixels: true // <--- Ajoutez cette ligne pour forcer l'arrondi des pixels et stopper le dédoublement
     },
     scene: [PreloadScene, TeamSelectScene, ModeSelectScene, CombatScene, ResultScene],
 };
