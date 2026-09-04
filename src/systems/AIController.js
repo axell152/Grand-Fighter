@@ -2,10 +2,10 @@
 // difficulty : 'easy' | 'normal' | 'hard' | 'boss' — influence réactivité et agressivité.
 
 const PROFILES = {
-  easy: { reactionMs: 380, attackChance: 0.25, blockChance: 0.15, specialChance: 0.05 },
-  normal: { reactionMs: 240, attackChance: 0.4, blockChance: 0.3, specialChance: 0.12 },
-  hard: { reactionMs: 140, attackChance: 0.55, blockChance: 0.45, specialChance: 0.2 },
-  boss: { reactionMs: 100, attackChance: 0.65, blockChance: 0.35, specialChance: 0.3 },
+  easy: { reactionMs: 380, attackChance: 0.25, blockChance: 0.15, specialChance: 0.05, dodgeChance: 0.05 },
+  normal: { reactionMs: 240, attackChance: 0.4, blockChance: 0.25, specialChance: 0.12, dodgeChance: 0.1 },
+  hard: { reactionMs: 140, attackChance: 0.5, blockChance: 0.35, specialChance: 0.2, dodgeChance: 0.15 },
+  boss: { reactionMs: 100, attackChance: 0.65, blockChance: 0.3, specialChance: 0.3, dodgeChance: 0.1 },
 };
 
 const CLOSE_RANGE = 110;
@@ -44,9 +44,11 @@ export class AIController {
     if (dist <= CLOSE_RANGE) {
       if (roll < this.profile.specialChance && this.fighter.meter >= 100) {
         this.currentDecision = 'special';
-      } else if (roll < this.profile.attackChance) {
+      } else if (roll < this.profile.specialChance + this.profile.attackChance) {
         this.currentDecision = Math.random() < 0.5 ? 'light' : 'heavy';
-      } else if (roll < this.profile.attackChance + this.profile.blockChance) {
+      } else if (roll < this.profile.specialChance + this.profile.attackChance + this.profile.dodgeChance) {
+        this.currentDecision = 'dodge';
+      } else if (roll < this.profile.specialChance + this.profile.attackChance + this.profile.dodgeChance + this.profile.blockChance) {
         this.currentDecision = 'block';
       } else {
         this.currentDecision = Math.random() < 0.5 ? 'retreat' : 'idle';
@@ -85,6 +87,10 @@ export class AIController {
         break;
       case 'special':
         f.attack('special');
+        this.currentDecision = 'idle';
+        break;
+      case 'dodge':
+        f.dodge();
         this.currentDecision = 'idle';
         break;
       case 'block':

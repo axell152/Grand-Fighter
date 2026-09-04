@@ -35,6 +35,7 @@ export class HitboxManager {
       for (const def of this.entries) {
         if (def.teamId === atk.teamId) continue; // pas d'ami vs ami
         if (!def.fighter.alive) continue;
+        if (def.fighter.invulnerable) continue; // esquive en cours : le coup passe à travers
         if (atk.fighter.hasHit(def.fighter.id)) continue; // déjà touché sur ce coup
 
         const hurtbox = def.fighter.getHurtboxWorld();
