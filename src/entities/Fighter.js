@@ -92,6 +92,27 @@ export class Fighter {
       accessories.push(this.sword1, this.sword2, this.sword3);
     }
 
+    // Personnalisation Tempest : cape électrique + halo de foudre autour de la tête
+    if (this.char.id === 'tempest') {
+      this.cape = scene.add.triangle(0, -h / 2 + 10, -w / 2, 0, w / 2, 0, 0, 60, this.char.colorDark)
+        .setStrokeStyle(2, 0x0f172a).setAlpha(0.9);
+      this.sparkRing = scene.add.circle(0, -h - 12, 26, 0xffffff, 0)
+        .setStrokeStyle(2, 0xfff176, 0.7);
+      this.boltL = scene.add.rectangle(-16, -h - 4, 4, 16, 0xfff176).setAngle(20);
+      this.boltR = scene.add.rectangle(16, -h - 4, 4, 16, 0xfff176).setAngle(-20);
+      accessories.unshift(this.cape); // la cape passe derrière le corps
+      accessories.push(this.sparkRing, this.boltL, this.boltR);
+    }
+
+    // Personnalisation Kronn (boss) : cornes de pierre + trident imposant
+    if (this.char.id === 'kronn') {
+      this.hornL = scene.add.triangle(-14, -h - 22, 0, 14, -10, -10, 8, -10, 0x6b6b8a).setStrokeStyle(2, 0x0f172a);
+      this.hornR = scene.add.triangle(14, -h - 22, 0, 14, -10, -10, 8, -10, 0x6b6b8a).setStrokeStyle(2, 0x0f172a);
+      this.trident = scene.add.rectangle(w / 2 + 22, -h / 2, 8, 130, 0x8d99ae).setStrokeStyle(2, 0x0f172a);
+      this.tridentTip = scene.add.triangle(w / 2 + 22, -h - 40, -10, 20, 10, 20, 0, -10, 0xd1d5db).setStrokeStyle(2, 0x0f172a);
+      accessories.push(this.hornL, this.hornR, this.trident, this.tridentTip);
+    }
+
     this.container.add(accessories);
 
     scene.physics.add.existing(this.container);

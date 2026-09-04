@@ -53,9 +53,33 @@ export class CombatScene extends Phaser.Scene {
   }
 
   buildStage() {
-    this.add.rectangle(GAME_WIDTH / 2, GAME_HEIGHT / 2, GAME_WIDTH, GAME_HEIGHT, COLORS.bgSea);
+    // Ciel en dégradé (simulé par bandes) + horizon
+    this.add.rectangle(GAME_WIDTH / 2, 90, GAME_WIDTH, 180, 0x0a1f3a);
+    this.add.rectangle(GAME_WIDTH / 2, 220, GAME_WIDTH, 100, COLORS.bg);
+    this.add.rectangle(GAME_WIDTH / 2, 340, GAME_WIDTH, 160, COLORS.bgSea);
+
+    // Silhouettes de rochers/île au loin pour la profondeur
+    this.add.triangle(150, 340, -80, 60, 80, 60, 0, -40, 0x0d2b4e).setAlpha(0.7);
+    this.add.triangle(820, 340, -100, 70, 100, 70, 20, -60, 0x0d2b4e).setAlpha(0.6);
+    this.add.rectangle(GAME_WIDTH / 2, 300, GAME_WIDTH, 6, 0x0d2b4e, 0.5);
+
+    // Silhouette de navire pirate au loin (mât + coque, purement décoratif/original)
+    this.add.rectangle(700, 330, 6, 90, 0x0a1a2e).setAlpha(0.5);
+    this.add.triangle(700, 300, 0, 0, 0, 60, 40, 30, 0x13324f).setAlpha(0.5);
+    this.add.rectangle(700, 380, 120, 20, 0x0a1a2e).setAlpha(0.5);
+
+    // Mer scintillante juste avant la plage
+    for (let i = 0; i < 14; i++) {
+      const x = 40 + i * 65 + Phaser.Math.Between(-15, 15);
+      this.add.rectangle(x, GROUND_Y - 30 + Phaser.Math.Between(-6, 6), 30, 3, 0x9fd3ff, 0.25);
+    }
+
     this.add.rectangle(GAME_WIDTH / 2, GROUND_Y + 60, GAME_WIDTH, 160, COLORS.groundDark);
     this.add.rectangle(GAME_WIDTH / 2, GROUND_Y, GAME_WIDTH, 8, COLORS.ground);
+    // Texture de sable/plage (traits simples)
+    for (let i = 0; i < 20; i++) {
+      this.add.rectangle(20 + i * 48, GROUND_Y + 20 + Phaser.Math.Between(0, 30), 30, 2, 0x5a4230, 0.4);
+    }
 
     // Sol physique invisible
     const ground = this.add.rectangle(GAME_WIDTH / 2, GROUND_Y + 4, GAME_WIDTH, 8, 0x000000, 0);
@@ -97,6 +121,7 @@ export class CombatScene extends Phaser.Scene {
   createFighter(charData, opts) {
     const fighter = new Fighter(this, charData, {
       ...opts,
+      onHit: (f) => { if (this.hud) this.hud.registerHit(f.isPlayer ? 'enemy' : 'player'); },
       onKo: (f) => this.handleKo(f),
     });
     fighter.container.setVisible(false);
@@ -174,7 +199,7 @@ export class CombatScene extends Phaser.Scene {
 
     const p = this.activePlayerFighter();
     const e = this.activeEnemyFighter();
-    if (p && e) this.hud.update(p, e, this.timeLeft);
+    if (p && e) this.hud.update(p, e, this.timeLeft, dt);
 
     if (!this.roundLocked) {
       this.timeLeft -= dt / 1000;
@@ -276,6 +301,7 @@ export class CombatScene extends Phaser.Scene {
     this.syncActiveVisuals('player');
     this.syncActiveVisuals('enemy');
     this.hud.setNames(this.activePlayerFighter().char.name, this.activeEnemyFighter().char.name);
+    this.hud.resetCombos();
     this.timeLeft = ROUND_TIME_SECONDS;
     this.roundLocked = false;
     this.hud.showBanner(`ROUND ${this.roundsWon.player + this.roundsWon.enemy + 1} - FIGHT!`);
