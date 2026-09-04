@@ -83,17 +83,13 @@ export class Fighter {
     this.currentAnim = 'idle';
     this.sprite.play(`${this.char.id}_idle`);
 
-   // On retire le corps physique du container global pour l'isoler proprement
     scene.physics.add.existing(this.container);
     
-    // On configure la taille de la hitbox physique sur le container
     const bodyWidth = w * 0.6; 
     const bodyHeight = h;
     
     this.container.body.setSize(bodyWidth, bodyHeight);
-    
-    // CORRECTION : On décale l'offset pour que le bas de la hitbox repose 
-    // exactement sur GROUND_Y (le point d'ancrage Y du container)
+    // On met l'offset à 0 en X (centré) et 0 en Y (le haut du body part du haut du sprite)
     this.container.body.setOffset(-bodyWidth / 2, -bodyHeight);
     
     this.container.body.setCollideWorldBounds(true);
@@ -162,7 +158,7 @@ export class Fighter {
   }
 
   isOnGround() {
-    return this.container.y >= GROUND_Y - 1 && this.container.body.velocity.y >= 0;
+    return this.container.y >= GROUND_Y;
   }
 
   // --- Blocage ---
@@ -353,6 +349,14 @@ export class Fighter {
     }
 
     this.gainMeterPassive(dt);
+
+    // Sécurité absolue : si le personnage est censé être au sol, on verrouille sa position au sol
+    if (this.container.y >= GROUND_Y) {
+      this.container.y = GROUND_Y;
+      if (this.container.body.velocity.y > 0) {
+        this.container.body.setVelocityY(0);
+      }
+    }
   }
 
   updateAttackPhases(dt) {
