@@ -85,13 +85,14 @@ export class Fighter {
 
    scene.physics.add.existing(this.container);
     
-    // Le corps physique doit occuper toute la hauteur (h) du personnage 
-    // et son décalage vertical doit le faire reposer exactement sur le bas du conteneur (Y = 0)
-    const bodyHeight = h; 
-    const bodyOffsetTop = h; 
+    // La hitbox fait toute la hauteur du sprite (h) et sa largeur (w)
+    const bodyWidth = w * 0.6; // Ajustez la largeur de la hitbox si besoin
+    const bodyHeight = h;
     
-    this.container.body.setSize(w, bodyHeight);
-    this.container.body.setOffset(-w / 2, -bodyOffsetTop);
+    this.container.body.setSize(bodyWidth, bodyHeight);
+    // -bodyHeight place le bas de la boîte exactement sur le point 0 du conteneur (les pieds au sol)
+    this.container.body.setOffset(-bodyWidth / 2, -bodyHeight);
+    
     this.container.body.setCollideWorldBounds(true);
     this.container.body.setDragX(1200);
 
