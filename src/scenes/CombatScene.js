@@ -21,6 +21,7 @@ export class CombatScene extends Phaser.Scene {
   }
 
   create() {
+    this.cameras.main.roundPixels = true;
     this.physics.world.gravity.y = GRAVITY_Y;
     this.buildStage();
 
