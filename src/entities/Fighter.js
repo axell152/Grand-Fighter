@@ -132,6 +132,21 @@ export class Fighter {
 
   playAnim(key) {
     const full = `${this.char.id}_${key}`;
+
+    // Sécurité : si une texture/animation manque (notamment après un nouvel
+    // ajout d'ennemi), on évite que Phaser fasse planter le combat.
+    const anim = this.scene.anims.get(full);
+    if (!anim) {
+      if (key === 'death') {
+        const fallback = `${this.char.id}_takeHit`;
+        if (this.scene.anims.get(fallback)) {
+          this.currentAnim = 'takeHit';
+          this.sprite.play(fallback);
+        }
+      }
+      return;
+    }
+
     if (this.currentAnim !== key) {
       this.currentAnim = key;
       this.sprite.play(full);
