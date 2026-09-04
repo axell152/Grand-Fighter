@@ -20,14 +20,25 @@ export class PreloadScene extends Phaser.Scene {
     });
 
     // Charge chaque spritesheet déclaré dans la config, pour chaque perso.
+    // On garde aussi une liste des textures demandées : cela permet de vérifier
+    // proprement les assets avant de créer les animations.
+    this._spriteAssets = [];
     Object.entries(SPRITES).forEach(([charId, conf]) => {
       Object.entries(conf.animations).forEach(([animKey, anim]) => {
         const textureKey = `${charId}_${animKey}`;
-        this.load.spritesheet(textureKey, `${conf.basePath}/${anim.file}`, {
+        const url = `${conf.basePath}/${anim.file}`;
+        this._spriteAssets.push({ charId, animKey, textureKey, url });
+        this.load.spritesheet(textureKey, url, {
           frameWidth: conf.frameWidth,
           frameHeight: conf.frameHeight,
         });
       });
+    });
+
+    this.load.on('loaderror', (file) => {
+      // Ne fait pas planter le jeu si un asset isolé est absent.
+      // Le Fighter utilisera alors automatiquement son idle comme secours.
+      console.warn(`[Sprites] Asset introuvable : ${file.key} (${file.src})`);
     });
   }
 
@@ -37,11 +48,23 @@ export class PreloadScene extends Phaser.Scene {
       Object.entries(conf.animations).forEach(([animKey, anim]) => {
         const textureKey = `${charId}_${animKey}`;
         const animName = `${charId}_${animKey}`;
-        if (!this.anims.exists(animName) && this.textures.exists(textureKey)) {
-          const texture = this.textures.get(textureKey);
-          const availableFrames = Math.max(1, texture.frameTotal - 1);
-          const lastFrame = Math.min(anim.frames - 1, availableFrames - 1);
+        // Un fichier peut être absent/cassé sans empêcher les autres
+        // personnages de se charger. On ne crée l'animation que si la texture
+        // existe réellement dans le TextureManager.
+        if (!this.textures.exists(textureKey)) {
+          console.warn(`[Sprites] Texture ignorée : ${textureKey}`);
+          return;
+        }
 
+        const texture = this.textures.get(textureKey);
+        const availableFrames = texture.frameTotal ?? 0;
+        const lastFrame = Math.min(anim.frames - 1, availableFrames - 1);
+        if (lastFrame < 0) {
+          console.warn(`[Sprites] Aucun frame disponible : ${textureKey}`);
+          return;
+        }
+
+        if (!this.anims.exists(animName)) {
           this.anims.create({
             key: animName,
             frames: this.anims.generateFrameNumbers(textureKey, { start: 0, end: lastFrame }),
