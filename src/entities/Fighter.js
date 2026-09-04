@@ -1,4 +1,4 @@
-import { GROUND_Y, MOVE_SPEED, JUMP_VELOCITY, DEFAULT_TIMINGS } from '../config.js';
+import { GROUND_Y, MOVE_SPEED, JUMP_VELOCITY, DEFAULT_TIMINGS, DODGE_SPEED, DODGE_DURATION, DODGE_IFRAMES, DODGE_COOLDOWN } from '../config.js';
 import { getSpriteConfig } from '../data/spriteConfig.js';
 
 // États possibles d'un combattant
@@ -12,6 +12,7 @@ export const STATE = {
   BLOCK: 'block',
   BLOCKSTUN: 'blockstun',
   HITSTUN: 'hitstun',
+  DODGE: 'dodge',
   KO: 'ko',
   INTRO: 'intro',
   VICTORY: 'victory',
@@ -45,6 +46,8 @@ export class Fighter {
     this.meter = 0;
     this.alive = true;
     this.blocking = false;
+    this.invulnerable = false;
+    this.dodgeCooldownTimer = 0;
 
     this.state = STATE.INTRO;
     this.stateTimer = 0;
@@ -103,11 +106,28 @@ export class Fighter {
   }
 
   isBusy() {
-    return [STATE.ATTACK_LIGHT, STATE.ATTACK_HEAVY, STATE.ATTACK_SPECIAL, STATE.HITSTUN, STATE.BLOCKSTUN, STATE.KO, STATE.INTRO, STATE.VICTORY].includes(this.state);
+    return [STATE.ATTACK_LIGHT, STATE.ATTACK_HEAVY, STATE.ATTACK_SPECIAL, STATE.HITSTUN, STATE.BLOCKSTUN, STATE.DODGE, STATE.KO, STATE.INTRO, STATE.VICTORY].includes(this.state);
   }
 
   canAct() {
     return this.alive && !this.isBusy();
+  }
+
+  // --- Esquive arrière ---
+  dodge() {
+    if (!this.alive) return false;
+    if (this.isBusy()) return false;
+    if ((this.dodgeCooldownTimer || 0) > 0) return false;
+
+    const dir = -this.facing; // s'éloigne de l'adversaire (facing pointe déjà vers lui)
+    this.container.body.setVelocityX(dir * DODGE_SPEED);
+    this.container.body.setVelocityY(0);
+    this.setState(STATE.DODGE);
+    this.stateTimer = DODGE_DURATION;
+    this.invulnerable = true;
+    this.sprite.setAlpha(0.45);
+    this.playAnim('run');
+    return true;
   }
 
   playAnim(key) {
@@ -334,6 +354,21 @@ export class Fighter {
         }
         break;
 
+      case STATE.DODGE:
+        this.stateTimer -= dt;
+        // Les frames d'invincibilité ne couvrent qu'une partie du mouvement d'esquive
+        if (this.invulnerable && (DODGE_DURATION - this.stateTimer) > DODGE_IFRAMES) {
+          this.invulnerable = false;
+        }
+        if (this.stateTimer <= 0) {
+          this.container.body.setVelocityX(0);
+          this.sprite.setAlpha(1);
+          this.invulnerable = false;
+          this.dodgeCooldownTimer = DODGE_COOLDOWN;
+          this.setState(STATE.IDLE);
+        }
+        break;
+
       case STATE.KO:
         break;
 
@@ -341,6 +376,7 @@ export class Fighter {
         break;
     }
 
+    if (this.dodgeCooldownTimer > 0) this.dodgeCooldownTimer -= dt;
     this.gainMeterPassive(dt);
   }
 
