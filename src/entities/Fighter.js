@@ -74,7 +74,8 @@ export class Fighter {
       .setOrigin(0.5, originY)
       .setScale(scale);
 
-    this.guardFx = scene.add.rectangle(0, -h / 2, w + 26, h + 20, 0x38bdf8, 0.3)
+    // FIX : Ajustement de la hauteur et du positionnement du rectangle de garde pour qu'il reste sur le sol
+    this.guardFx = scene.add.rectangle(0, -h / 2, w + 16, h, 0x38bdf8, 0.3)
       .setBlendMode(Phaser.BlendModes.ADD)
       .setVisible(false);
 
