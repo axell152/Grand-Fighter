@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT } from './config.js';
+import { PreloadScene } from './scenes/PreloadScene.js';
 import { TeamSelectScene } from './scenes/TeamSelectScene.js';
 import { ModeSelectScene } from './scenes/ModeSelectScene.js';
 import { CombatScene } from './scenes/CombatScene.js';
@@ -20,7 +21,7 @@ const config = {
       debug: false,
     },
   },
-  scene: [TeamSelectScene, ModeSelectScene, CombatScene, ResultScene],
+  scene: [PreloadScene, TeamSelectScene, ModeSelectScene, CombatScene, ResultScene],
 };
 
 new Phaser.Game(config);
