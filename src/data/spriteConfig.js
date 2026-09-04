@@ -11,7 +11,7 @@ export const SPRITES = {
     basePath: '/sprites/kaira',
     frameWidth: 200,
     frameHeight: 200,
-    targetHeight: 500,
+    targetHeight: 800,
     originY: 0.61,
     animations: {
       idle: { file: 'Idle.png', frames: 8, frameRate: 8, repeat: -1 },
