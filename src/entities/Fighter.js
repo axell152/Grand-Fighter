@@ -132,9 +132,22 @@ export class Fighter {
 
   playAnim(key) {
     const full = `${this.char.id}_${key}`;
-    if (this.currentAnim !== key) {
-      this.currentAnim = key;
-      this.sprite.play(full);
+    const idle = `${this.char.id}_idle`;
+
+    // Certains packs externes peuvent avoir un asset manquant ou un chemin
+    // incorrect. Phaser ne doit jamais faire planter le combat dans ce cas.
+    // On conserve l'animation réelle si elle existe, sinon on retombe sur idle.
+    const hasAnimation = this.scene.anims.exists(full);
+    const hasTexture = this.scene.textures.exists(full);
+    const fallbackAvailable = this.scene.anims.exists(idle) && this.scene.textures.exists(idle);
+    const animationToPlay = hasAnimation && hasTexture ? full : (fallbackAvailable ? idle : null);
+
+    if (!animationToPlay) return;
+
+    const effectiveAnim = animationToPlay === idle ? 'idle' : key;
+    if (this.currentAnim !== effectiveAnim) {
+      this.currentAnim = effectiveAnim;
+      this.sprite.play(animationToPlay);
     }
   }
 
