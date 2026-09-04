@@ -83,14 +83,18 @@ export class Fighter {
     this.currentAnim = 'idle';
     this.sprite.play(`${this.char.id}_idle`);
 
-   scene.physics.add.existing(this.container);
+   // On retire le corps physique du container global pour l'isoler proprement
+    scene.physics.add.existing(this.container);
     
+    // On configure la taille de la hitbox physique sur le container
     const bodyWidth = w * 0.6; 
     const bodyHeight = h;
     
     this.container.body.setSize(bodyWidth, bodyHeight);
+    
+    // CORRECTION : On décale l'offset pour que le bas de la hitbox repose 
+    // exactement sur GROUND_Y (le point d'ancrage Y du container)
     this.container.body.setOffset(-bodyWidth / 2, -bodyHeight);
-    this.container.body.updateFromGameObject(); // <--- Synchronise instantanément la position physique avec le conteneur
     
     this.container.body.setCollideWorldBounds(true);
     this.container.body.setDragX(1200);
