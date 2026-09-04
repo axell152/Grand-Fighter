@@ -83,9 +83,15 @@ export class Fighter {
     this.currentAnim = 'idle';
     this.sprite.play(`${this.char.id}_idle`);
 
-    scene.physics.add.existing(this.container);
-    this.container.body.setSize(w, h + 32);
-    this.container.body.setOffset(-w / 2, -h - 32);
+   scene.physics.add.existing(this.container);
+    
+    // Le corps physique doit occuper toute la hauteur (h) du personnage 
+    // et son décalage vertical doit le faire reposer exactement sur le bas du conteneur (Y = 0)
+    const bodyHeight = h; 
+    const bodyOffsetTop = h; 
+    
+    this.container.body.setSize(w, bodyHeight);
+    this.container.body.setOffset(-w / 2, -bodyOffsetTop);
     this.container.body.setCollideWorldBounds(true);
     this.container.body.setDragX(1200);
 
@@ -218,9 +224,9 @@ export class Fighter {
   getHurtboxWorld() {
     return {
       x: this.x - this.width / 2,
-      y: this.y - this.height - 32,
+      y: this.y - this.height,
       width: this.width,
-      height: this.height + 32,
+      height: this.height,
     };
   }
 
