@@ -4,12 +4,12 @@ const MODES = [
   {
     key: 'duel',
     title: 'DUEL D\'ÉQUIPE',
-    desc: 'Best of 3 rounds vs une équipe adverse.\nChangez de perso entre les rounds (touche T).',
+    desc: 'Best of 3 rounds vs une équipe adverse.\nLa sélection adverse inclut les nouveaux ennemis.\nChangez de perso entre les rounds (touche T).',
   },
   {
     key: 'gauntlet',
     title: 'VAGUE D\'ENNEMIS',
-    desc: '2 adversaires en même temps, sans reset de vie.\nSurvivez et changez de perso à la volée.',
+    desc: '2 adversaires en même temps, sans reset de vie.\nPirates, Marines et hommes-poissons.\nSurvivez et changez de perso à la volée.',
   },
   {
     key: 'boss',

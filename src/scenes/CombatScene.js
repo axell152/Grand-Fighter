@@ -1,5 +1,5 @@
 import { GAME_WIDTH, GAME_HEIGHT, GROUND_Y, COLORS, GRAVITY_Y, ROUND_TIME_SECONDS, ROUNDS_TO_WIN } from '../config.js';
-import { getCharacter, getBoss } from '../data/characters.js';
+import { getCharacter, getBoss, getMonster, getOnePieceEnemy } from '../data/characters.js';
 import { Fighter } from '../entities/Fighter.js';
 import { InputBuffer } from '../systems/InputBuffer.js';
 import { HitboxManager } from '../systems/HitboxManager.js';
@@ -8,7 +8,27 @@ import { AIController } from '../systems/AIController.js';
 import { BossController } from '../systems/BossController.js';
 import { HUD } from '../ui/HUD.js';
 
-const ROSTER_FOR_ENEMY = ['kaira', 'ryn', 'tempest'];
+// Roster ennemi : monstres d'origine + les 14 ennemis One Piece fournis.
+const ROSTER_FOR_ENEMY = [
+  ['monster', 'goblin'],
+  ['monster', 'skeleton'],
+  ['monster', 'mushroom'],
+  ['monster', 'flying_eye'],
+  ['op', 'mr1'],
+  ['op', 'mr2'],
+  ['op', 'smoker'],
+  ['op', 'tashigi'],
+  ['op', 'alvida'],
+  ['op', 'arlong'],
+  ['op', 'morgan'],
+  ['op', 'buggy'],
+  ['op', 'kuro'],
+  ['op', 'crocodile'],
+  ['op', 'don_krieg'],
+  ['op', 'jumping_fishman'],
+  ['op', 'marine_rifleman'],
+  ['op', 'marine_swordsman'],
+];
 
 export class CombatScene extends Phaser.Scene {
   constructor() {
@@ -105,10 +125,12 @@ export class CombatScene extends Phaser.Scene {
     }
 
     const count = this.mode === 'gauntlet' ? 2 : Math.max(2, this.playerTeamIds.length);
-    const enemyIds = pickRandomEnemyRoster(count);
-    const members = enemyIds.map((id, i) =>
-      this.createFighter(getCharacter(id), { isPlayer: false, facing: -1, x: -700 - i * 10, y: GROUND_Y })
-    );
+    const enemyEntries = pickRandomEnemyRoster(count);
+    const members = enemyEntries.map((entry, i) => {
+      const [kind, id] = entry;
+      const char = kind === 'op' ? getOnePieceEnemy(id) : getMonster(id);
+      return this.createFighter(char, { isPlayer: false, facing: -1, x: -700 - i * 10, y: GROUND_Y });
+    });
     const simultaneousActive = this.mode === 'gauntlet' ? 2 : 1;
     this.enemyTeam = new TeamManager(members, { simultaneousActive });
     members.forEach((m) => {
@@ -356,6 +378,8 @@ function pickRandomEnemyRoster(count) {
     const idx = Phaser.Math.Between(0, pool.length - 1);
     picked.push(pool.splice(idx, 1)[0]);
   }
-  while (picked.length < count) picked.push(ROSTER_FOR_ENEMY[picked.length % ROSTER_FOR_ENEMY.length]);
+  while (picked.length < count) {
+    picked.push(ROSTER_FOR_ENEMY[picked.length % ROSTER_FOR_ENEMY.length]);
+  }
   return picked;
 }
