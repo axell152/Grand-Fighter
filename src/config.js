@@ -48,5 +48,11 @@ export const ROUNDS_TO_WIN = 2; // best of 3
 export const MOVE_SPEED = 220;
 export const JUMP_VELOCITY = -640;
 
+// Esquive arrière (touche E)
+export const DODGE_SPEED = 480;
+export const DODGE_DURATION = 260; // durée totale du mouvement d'esquive (ms)
+export const DODGE_IFRAMES = 190; // fenêtre d'invincibilité au sein de l'esquive (ms)
+export const DODGE_COOLDOWN = 450; // délai avant de pouvoir esquiver à nouveau (ms)
+
 // Distance de combo buffer (fenêtre en ms pour enchaîner un input)
 export const INPUT_BUFFER_WINDOW = 200;
