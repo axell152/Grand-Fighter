@@ -21,6 +21,51 @@ export const STATE = {
 let NEXT_ID = 1;
 
 // Correspondance état/type de coup -> nom d'animation dans la spritesheet du perso
+
+// Calcule automatiquement où se trouve le bas réellement visible du premier
+// frame d'un spritesheet. C'est important pour les planches One Piece qui ont
+// souvent une marge transparente sous les pieds.
+function getVisibleBottomRatio(scene, textureKey, fallback = 1) {
+  try {
+    const texture = scene.textures.get(textureKey);
+    if (!texture) return fallback;
+
+    const source = texture.getSourceImage();
+    const frame = texture.get();
+    if (!source || !frame || !frame.cutWidth || !frame.cutHeight) return fallback;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = frame.cutWidth;
+    canvas.height = frame.cutHeight;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return fallback;
+
+    ctx.drawImage(
+      source,
+      frame.cutX,
+      frame.cutY,
+      frame.cutWidth,
+      frame.cutHeight,
+      0,
+      0,
+      frame.cutWidth,
+      frame.cutHeight,
+    );
+
+    const data = ctx.getImageData(0, 0, frame.cutWidth, frame.cutHeight).data;
+    for (let y = frame.cutHeight - 1; y >= 0; y--) {
+      for (let x = 0; x < frame.cutWidth; x++) {
+        if (data[(y * frame.cutWidth + x) * 4 + 3] > 12) {
+          return Math.max(0.05, Math.min(1, (y + 1) / frame.cutHeight));
+        }
+      }
+    }
+  } catch (e) {
+    // Si le navigateur interdit l'accès aux pixels, on utilise la valeur configurée.
+  }
+  return fallback;
+}
+
 const ATTACK_ANIM = {
   light: 'attack1',
   heavy: 'attack2',
@@ -80,8 +125,12 @@ export class Fighter {
     this.shadow = scene.add.ellipse(0, 6, w * 1.1, 16, 0x000000, 0.4);
 
     const scale = h / this.spriteConf.frameHeight;
+    const visualOriginY = isOnePieceEnemy
+      ? getVisibleBottomRatio(scene, `${this.char.id}_idle`, this.spriteConf.originY ?? 1)
+      : (this.spriteConf.originY ?? 1);
+
     this.sprite = scene.add.sprite(0, 0, `${this.char.id}_idle`)
-      .setOrigin(0.5, this.spriteConf.originY ?? 1)
+      .setOrigin(0.5, visualOriginY)
       .setScale(scale);
 
     this.guardFx = scene.add.rectangle(0, -h / 2, w + 26, h + 20, 0x38bdf8, 0.3)
