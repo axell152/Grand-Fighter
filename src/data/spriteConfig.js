@@ -11,7 +11,7 @@ export const SPRITES = {
     basePath: '/sprites/kaira',
     frameWidth: 200,
     frameHeight: 200,
-    targetHeight: 450,
+    targetHeight: 800,
     originY: 0.61,
     animations: {
       idle: { file: 'Idle.png', frames: 8, frameRate: 8, repeat: -1 },
@@ -29,7 +29,7 @@ export const SPRITES = {
     basePath: '/sprites/ryn',
     frameWidth: 150,
     frameHeight: 150,
-    targetHeight: 450,
+    targetHeight: 800,
     originY: 0.647,
     animations: {
       idle: { file: 'Idle.png', frames: 8, frameRate: 8, repeat: -1 },
@@ -47,7 +47,7 @@ export const SPRITES = {
     basePath: '/sprites/tempest',
     frameWidth: 150,
     frameHeight: 150,
-    targetHeight: 450,
+    targetHeight: 800,
     originY: 0.667,
     animations: {
       idle: { file: 'Idle.png', frames: 8, frameRate: 8, repeat: -1 },
@@ -67,7 +67,7 @@ export const SPRITES = {
     basePath: '/sprites/kronn',
     frameWidth: 250,
     frameHeight: 250,
-    targetHeight: 500,
+    targetHeight: 1000,
     originY: 0.668,
     animations: {
       idle: { file: 'Idle.png', frames: 8, frameRate: 6, repeat: -1 },
