@@ -56,7 +56,19 @@ export class Fighter {
     this.spriteConf = getSpriteConfig(this.char.id);
     if (!this.spriteConf) throw new Error(`Pas de sprite configuré pour ${this.char.id}`);
 
-    const h = this.spriteConf.targetHeight;
+    // Les planches One Piece ont des marges et des proportions très différentes
+    // de celles des personnages jouables. On réduit donc uniquement les ennemis
+    // One Piece à l'échelle visuelle des combattants jouables, sans toucher aux boss
+    // ni aux personnages du jeu déjà présents.
+    const ONE_PIECE_ENEMIES = new Set([
+      'mr1', 'mr2', 'smoker', 'tashigi', 'alvida', 'arlong', 'morgan',
+      'buggy', 'kuro', 'crocodile', 'don_krieg', 'jumping_fishman',
+      'marine_rifleman', 'marine_swordsman',
+    ]);
+    const isOnePieceEnemy = !this.isPlayer && !this.isBoss && ONE_PIECE_ENEMIES.has(this.char.id);
+    const visualMultiplier = isOnePieceEnemy ? 0.52 : 1;
+
+    const h = Math.round(this.spriteConf.targetHeight * visualMultiplier);
     const w = Math.round(h * 0.42);
     this.width = w;
     this.height = h;
