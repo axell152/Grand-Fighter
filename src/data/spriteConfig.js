@@ -11,7 +11,7 @@ export const SPRITES = {
     basePath: '/sprites/kaira',
     frameWidth: 200,
     frameHeight: 200,
-    targetHeight: 500,
+    targetHeight: 450,
     originY: 0.61,
     animations: {
       idle: { file: 'Idle.png', frames: 8, frameRate: 8, repeat: -1 },
@@ -29,7 +29,7 @@ export const SPRITES = {
     basePath: '/sprites/ryn',
     frameWidth: 150,
     frameHeight: 150,
-    targetHeight: 500,
+    targetHeight: 450,
     originY: 0.647,
     animations: {
       idle: { file: 'Idle.png', frames: 8, frameRate: 8, repeat: -1 },
@@ -47,7 +47,7 @@ export const SPRITES = {
     basePath: '/sprites/tempest',
     frameWidth: 150,
     frameHeight: 150,
-    targetHeight: 500,
+    targetHeight: 450,
     originY: 0.667,
     animations: {
       idle: { file: 'Idle.png', frames: 8, frameRate: 8, repeat: -1 },
@@ -78,6 +78,79 @@ export const SPRITES = {
       attack2: { file: 'Attack2.png', frames: 8, frameRate: 12, repeat: 0 },
       takeHit: { file: 'TakeHit.png', frames: 3, frameRate: 14, repeat: 0 },
       death: { file: 'Death.png', frames: 7, frameRate: 8, repeat: 0 },
+    },
+  },
+
+  // --- Monstres (adversaires du mode "Vague d'ennemis") ---
+  goblin: {
+    basePath: '/sprites/goblin',
+    frameWidth: 150,
+    frameHeight: 150,
+    targetHeight: 400,
+    originY: 0.673,
+    animations: {
+      idle: { file: 'Idle.png', frames: 4, frameRate: 8, repeat: -1 },
+      run: { file: 'Run.png', frames: 8, frameRate: 12, repeat: -1 },
+      jump: { file: 'Idle.png', frames: 4, frameRate: 8, repeat: -1 },
+      fall: { file: 'Idle.png', frames: 4, frameRate: 8, repeat: -1 },
+      attack1: { file: 'Attack1.png', frames: 8, frameRate: 16, repeat: 0 },
+      attack2: { file: 'Attack1.png', frames: 8, frameRate: 20, repeat: 0 },
+      takeHit: { file: 'TakeHit.png', frames: 4, frameRate: 14, repeat: 0 },
+      death: { file: 'Death.png', frames: 4, frameRate: 8, repeat: 0 },
+    },
+  },
+
+  skeleton: {
+    basePath: '/sprites/skeleton',
+    frameWidth: 150,
+    frameHeight: 150,
+    targetHeight: 430,
+    originY: 0.673,
+    animations: {
+      idle: { file: 'Idle.png', frames: 4, frameRate: 8, repeat: -1 },
+      run: { file: 'Run.png', frames: 4, frameRate: 10, repeat: -1 },
+      jump: { file: 'Idle.png', frames: 4, frameRate: 8, repeat: -1 },
+      fall: { file: 'Idle.png', frames: 4, frameRate: 8, repeat: -1 },
+      attack1: { file: 'Attack1.png', frames: 8, frameRate: 16, repeat: 0 },
+      attack2: { file: 'Attack2.png', frames: 4, frameRate: 10, repeat: 0 },
+      takeHit: { file: 'TakeHit.png', frames: 4, frameRate: 14, repeat: 0 },
+      death: { file: 'Death.png', frames: 4, frameRate: 8, repeat: 0 },
+    },
+  },
+
+  mushroom: {
+    basePath: '/sprites/mushroom',
+    frameWidth: 150,
+    frameHeight: 150,
+    targetHeight: 380,
+    originY: 0.673,
+    animations: {
+      idle: { file: 'Idle.png', frames: 4, frameRate: 8, repeat: -1 },
+      run: { file: 'Run.png', frames: 8, frameRate: 10, repeat: -1 },
+      jump: { file: 'Idle.png', frames: 4, frameRate: 8, repeat: -1 },
+      fall: { file: 'Idle.png', frames: 4, frameRate: 8, repeat: -1 },
+      attack1: { file: 'Attack1.png', frames: 8, frameRate: 14, repeat: 0 },
+      attack2: { file: 'Attack1.png', frames: 8, frameRate: 18, repeat: 0 },
+      takeHit: { file: 'TakeHit.png', frames: 4, frameRate: 14, repeat: 0 },
+      death: { file: 'Death.png', frames: 4, frameRate: 8, repeat: 0 },
+    },
+  },
+
+  flying_eye: {
+    basePath: '/sprites/flying_eye',
+    frameWidth: 150,
+    frameHeight: 150,
+    targetHeight: 340,
+    originY: 0.613,
+    animations: {
+      idle: { file: 'Idle.png', frames: 8, frameRate: 8, repeat: -1 },
+      run: { file: 'Run.png', frames: 8, frameRate: 12, repeat: -1 },
+      jump: { file: 'Idle.png', frames: 8, frameRate: 8, repeat: -1 },
+      fall: { file: 'Idle.png', frames: 8, frameRate: 8, repeat: -1 },
+      attack1: { file: 'Attack1.png', frames: 8, frameRate: 16, repeat: 0 },
+      attack2: { file: 'Attack1.png', frames: 8, frameRate: 20, repeat: 0 },
+      takeHit: { file: 'TakeHit.png', frames: 4, frameRate: 14, repeat: 0 },
+      death: { file: 'Death.png', frames: 4, frameRate: 8, repeat: 0 },
     },
   },
 };
