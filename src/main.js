@@ -14,6 +14,10 @@ const config = {
     width: 800,
     height: 600,
     parent: 'game-container',
+    scale: {
+        mode: Phaser.Scale.FIT,          // Redimensionne le jeu pour qu'il tienne entièrement dans l'écran
+        autoCenter: Phaser.Scale.CENTER_BOTH // Centre le jeu automatiquement au milieu de la page
+    },
     physics: {
         default: 'arcade',
         arcade: {
@@ -25,7 +29,7 @@ const config = {
         pixelArt: true, // <--- Indispensable pour le pixel art, évite le flou et stabilise le rendu
         antialias: false
     },
-   scene: [PreloadScene, TeamSelectScene, ModeSelectScene, CombatScene, ResultScene],
+    scene: [PreloadScene, TeamSelectScene, ModeSelectScene, CombatScene, ResultScene],
 };
 
 new Phaser.Game(config);
