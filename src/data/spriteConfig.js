@@ -61,7 +61,7 @@ export const SPRITES = {
     basePath: '/sprites/kronn',
     frameWidth: 250,
     frameHeight: 250,
-    targetHeight: 690,
+    targetHeight: 750,
     animations: {
       idle: { file: 'Idle.png', frames: 8, frameRate: 6, repeat: -1 },
       run: { file: 'Run.png', frames: 8, frameRate: 8, repeat: -1 },
