@@ -2,6 +2,9 @@
 // (Martial Hero, Huntress, Evil Wizard, Evil Wizard 2 — tous LuizMelo, itch.io).
 // frameWidth/frameHeight = taille d'une frame dans le fichier source.
 // targetHeight = hauteur voulue à l'écran une fois mise à l'échelle dans le jeu.
+// originY = ratio vertical (0-1) où se trouvent réellement les pieds dans le cadre
+// source (les cadres ont une grosse marge transparente pour laisser de la place
+// aux poses d'attaque qui s'étendent plus loin que l'idle).
 
 export const SPRITES = {
   kaira: {
@@ -9,6 +12,7 @@ export const SPRITES = {
     frameWidth: 200,
     frameHeight: 200,
     targetHeight: 450,
+    originY: 0.61,
     animations: {
       idle: { file: 'Idle.png', frames: 8, frameRate: 8, repeat: -1 },
       run: { file: 'Run.png', frames: 8, frameRate: 12, repeat: -1 },
@@ -26,6 +30,7 @@ export const SPRITES = {
     frameWidth: 150,
     frameHeight: 150,
     targetHeight: 450,
+    originY: 0.647,
     animations: {
       idle: { file: 'Idle.png', frames: 8, frameRate: 8, repeat: -1 },
       run: { file: 'Run.png', frames: 8, frameRate: 12, repeat: -1 },
@@ -43,6 +48,7 @@ export const SPRITES = {
     frameWidth: 150,
     frameHeight: 150,
     targetHeight: 450,
+    originY: 0.667,
     animations: {
       idle: { file: 'Idle.png', frames: 8, frameRate: 8, repeat: -1 },
       run: { file: 'Run.png', frames: 8, frameRate: 12, repeat: -1 },
@@ -62,6 +68,7 @@ export const SPRITES = {
     frameWidth: 250,
     frameHeight: 250,
     targetHeight: 500,
+    originY: 0.668,
     animations: {
       idle: { file: 'Idle.png', frames: 8, frameRate: 6, repeat: -1 },
       run: { file: 'Run.png', frames: 8, frameRate: 8, repeat: -1 },

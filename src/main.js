@@ -14,6 +14,7 @@ const config = {
   height: GAME_HEIGHT,
   parent: 'app',
   backgroundColor: '#0b2545',
+  pixelArt: true, // filtrage "plus proche voisin" : évite le bleeding/clignotement des sprites agrandis
   physics: {
     default: 'arcade',
     arcade: {

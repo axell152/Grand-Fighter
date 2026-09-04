@@ -65,8 +65,8 @@ export class Fighter {
     this.shadow = scene.add.ellipse(0, 6, w * 1.1, 16, 0x000000, 0.4);
 
     const scale = h / this.spriteConf.frameHeight;
-    this.sprite = scene.add.sprite(0, 4, `${this.char.id}_idle`)
-      .setOrigin(0.5, 1)
+    this.sprite = scene.add.sprite(0, 0, `${this.char.id}_idle`)
+      .setOrigin(0.5, this.spriteConf.originY ?? 1)
       .setScale(scale);
 
     this.guardFx = scene.add.rectangle(0, -h / 2, w + 26, h + 20, 0x38bdf8, 0.3)
