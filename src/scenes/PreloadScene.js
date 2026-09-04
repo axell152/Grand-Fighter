@@ -37,10 +37,14 @@ export class PreloadScene extends Phaser.Scene {
       Object.entries(conf.animations).forEach(([animKey, anim]) => {
         const textureKey = `${charId}_${animKey}`;
         const animName = `${charId}_${animKey}`;
-        if (!this.anims.exists(animName)) {
+        if (!this.anims.exists(animName) && this.textures.exists(textureKey)) {
+          const texture = this.textures.get(textureKey);
+          const availableFrames = Math.max(1, texture.frameTotal - 1);
+          const lastFrame = Math.min(anim.frames - 1, availableFrames - 1);
+
           this.anims.create({
             key: animName,
-            frames: this.anims.generateFrameNumbers(textureKey, { start: 0, end: anim.frames - 1 }),
+            frames: this.anims.generateFrameNumbers(textureKey, { start: 0, end: lastFrame }),
             frameRate: anim.frameRate,
             repeat: anim.repeat,
           });
