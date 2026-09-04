@@ -57,11 +57,12 @@ export class Fighter {
     const w = Math.round(h * 0.42);
     this.width = w;
     this.height = h;
-    // Échelle utilisée pour adapter la portée des hitboxes (tunées à l'origine pour h=100)
+    // Échelle utilisée pour adapter la portée des hitboxes
     this.visualScale = h / 100;
 
     this.container = scene.add.container(opts.x, opts.y);
 
+    // Ajustement de l'ombre pour qu'elle s'élargisse un peu avec la taille du perso
     this.shadow = scene.add.ellipse(0, 6, w * 1.1, 16, 0x000000, 0.4);
 
     const scale = h / this.spriteConf.frameHeight;
@@ -69,6 +70,7 @@ export class Fighter {
       .setOrigin(0.5, 1)
       .setScale(scale);
 
+    // FIX : Adapter le rectangle de garde proportionnellement à la nouvelle hauteur (h)
     this.guardFx = scene.add.rectangle(0, -h / 2, w + 26, h + 20, 0x38bdf8, 0.3)
       .setBlendMode(Phaser.BlendModes.ADD)
       .setVisible(false);
@@ -78,8 +80,14 @@ export class Fighter {
     this.sprite.play(`${this.char.id}_idle`);
 
     scene.physics.add.existing(this.container);
-    this.container.body.setSize(w, h + 32);
-    this.container.body.setOffset(-w / 2, -h - 32);
+    
+    // FIX : Remplacer les valeurs fixes (+32) par une proportion liée à la hauteur (h)
+    // pour que la physique englobe exactement le personnage agrandi sans le faire flotter.
+    const bodyHeight = h; 
+    const bodyOffsetTop = h; 
+    
+    this.container.body.setSize(w, bodyHeight);
+    this.container.body.setOffset(-w / 2, -bodyOffsetTop);
     this.container.body.setCollideWorldBounds(true);
     this.container.body.setDragX(1200);
 
@@ -212,9 +220,9 @@ export class Fighter {
   getHurtboxWorld() {
     return {
       x: this.x - this.width / 2,
-      y: this.y - this.height - 32,
+      y: this.y - this.height, // Suppression du décalage fixe de 32 pour coller au haut du sprite
       width: this.width,
-      height: this.height + 32,
+      height: this.height,     // Utilise directement la hauteur totale du personnage
     };
   }
 
