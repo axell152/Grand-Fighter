@@ -65,17 +65,11 @@ export class Fighter {
     this.shadow = scene.add.ellipse(0, 6, w * 1.1, 16, 0x000000, 0.4);
 
     const scale = h / this.spriteConf.frameHeight;
-    
-    // Si c'est Kronn, on ajuste légèrement son origine verticale ou son offset 
-    // pour compenser la taille de sa frame source par rapport au sol.
-    const originY = (this.char.id === 'kronn') ? 0.92 : 1; 
-
     this.sprite = scene.add.sprite(0, 4, `${this.char.id}_idle`)
-      .setOrigin(0.5, originY)
+      .setOrigin(0.5, 1)
       .setScale(scale);
 
-    // FIX : Ajustement de la hauteur et du positionnement du rectangle de garde pour qu'il reste sur le sol
-    this.guardFx = scene.add.rectangle(0, -h / 2, w + 16, h, 0x38bdf8, 0.3)
+    this.guardFx = scene.add.rectangle(0, -h / 2, w + 26, h + 20, 0x38bdf8, 0.3)
       .setBlendMode(Phaser.BlendModes.ADD)
       .setVisible(false);
 
@@ -84,14 +78,8 @@ export class Fighter {
     this.sprite.play(`${this.char.id}_idle`);
 
     scene.physics.add.existing(this.container);
-    
-    const bodyWidth = w * 0.6; 
-    const bodyHeight = h;
-    
-    this.container.body.setSize(bodyWidth, bodyHeight);
-    // On met l'offset à 0 en X (centré) et 0 en Y (le haut du body part du haut du sprite)
-    this.container.body.setOffset(-bodyWidth / 2, -bodyHeight);
-    
+    this.container.body.setSize(w, h + 32);
+    this.container.body.setOffset(-w / 2, -h - 32);
     this.container.body.setCollideWorldBounds(true);
     this.container.body.setDragX(1200);
 
@@ -158,7 +146,7 @@ export class Fighter {
   }
 
   isOnGround() {
-    return this.container.y >= GROUND_Y;
+    return this.container.y >= GROUND_Y - 1 && this.container.body.velocity.y >= 0;
   }
 
   // --- Blocage ---
@@ -224,9 +212,9 @@ export class Fighter {
   getHurtboxWorld() {
     return {
       x: this.x - this.width / 2,
-      y: this.y - this.height,
+      y: this.y - this.height - 32,
       width: this.width,
-      height: this.height,
+      height: this.height + 32,
     };
   }
 
@@ -349,14 +337,6 @@ export class Fighter {
     }
 
     this.gainMeterPassive(dt);
-
-    // Sécurité absolue : si le personnage est censé être au sol, on verrouille sa position au sol
-    if (this.container.y >= GROUND_Y) {
-      this.container.y = GROUND_Y;
-      if (this.container.body.velocity.y > 0) {
-        this.container.body.setVelocityY(0);
-      }
-    }
   }
 
   updateAttackPhases(dt) {
